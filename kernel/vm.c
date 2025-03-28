@@ -296,11 +296,10 @@ freewalk(pagetable_t pagetable)
 // Minor recursive print pages function
 void printpage(pagetable_t pagetable, int deg)
 {
-  if (deg > 3) return;
   for (int i = 0; i < 512; i++)
   {
     pte_t pte = pagetable[i];
-    if (pte & PTE_V)// || (i == 509 && deg == 3))
+    if (pte & PTE_V)
     {
       uint64 pa = PTE2PA(pte);
       for (int j = 0; j < deg; j++) printf(" ..");
