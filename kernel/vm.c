@@ -293,6 +293,31 @@ freewalk(pagetable_t pagetable)
   kfree((void*)pagetable);
 }
 
+// Minor recursive print pages function
+void printpage(pagetable_t pagetable, int deg)
+{
+  for (int i = 0; i < 512; i++)
+  {
+    pte_t pte = pagetable[i];
+    if (pte & PTE_V)
+    {
+      uint64 pa = PTE2PA(pte);
+      for (int j = 0; j < deg; j++) printf(" ..");
+      printf("%d: pte %p pa %p\n", i, (void*)pte, (void*)pa);
+
+      if ((pte & PTE_V) && (pte & (PTE_R|PTE_W|PTE_X)) == 0) printpage((pagetable_t)pa, deg + 1);
+    }
+  }
+}
+
+// Print toàn bộ page table
+void vmprint(pagetable_t pagetable)
+{
+  printf("page table %p\n", (void*)pagetable);
+  printpage(pagetable, 1);
+}
+
+
 // Free user memory pages,
 // then free page-table pages.
 void
